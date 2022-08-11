@@ -1,59 +1,80 @@
-import React, { useEffect, useState } from 'react';
+import { useState } from "react";
 import { ethers } from "ethers";
 
 
-function Admin() {
-    const [storedPrice, setStoredPrice] = useState('');
-    const provider = new ethers.providers.Web3Provider(window.ethereum)
-    const signer = provider.getSigner()
-    const contractAddress='0x8cDE3FC3Bcb767820a59111D46c93Af3983739F3';
+const makeRefund = async ({ setError, setTxs, ether, addr}) => {
+    try {
+      if(!window.ethereum)
+        throw new Error("No crypto wallet found. Please Install it");
+      await window.ethereum.send("eth_requestAccounts");
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      ethers.utils.getAddress(addr);
+      const tx = await signer.sendTransaction({
+        to: addr,
+        value: ethers.utils.parseEther(ether)
+      });
+      console.log({ ether, addr});
+      console.log("tx", tx);
+      setTxs([tx])
+    } catch (err) {
+      setError(err.message);
+    }
+};
 
-    const ABI = 
-    '[{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[],"name":"getLatestPrice","outputs":[{"internalType":"int256","name":"","type":"int256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"storeLatestPrice","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"storedPrice","outputs":[{"internalType":"int256","name":"","type":"int256"}],"stateMutability":"view","type":"function"}]'
-      const contract = new ethers.Contract(contractAddress, ABI, signer);
-    
 
+export default function Admin() {
+    const [error, setError] = useState();
+    const [txs, setTxs] = useState([]);
 
-    const getStoredPrice = async () => {
-        try {
-          const contractPrice = await contract.storedPrice();
-          setStoredPrice(parseInt(contractPrice) / 100000000);
-        } catch (error) {
-          console.log("getStoredPrice Error: ", error);
-        }
-      }
-    
-    async function updateNewPrice() {
-        try {
-          const transaction = await contract.storeLatestPrice();
-          await transaction.wait();
-          await getStoredPrice();
-        } catch (error) {
-          console.log("updateNewPrice Error: ", error);
-        }
-    
-      }
-    
-    getStoredPrice()
-    .catch(console.error)
-
+    const handleSubmit = async (e) => {
+    e.preventDefault();
+    const data = new FormData(e.target);
+    setError();
+    await makeRefund({
+      setError,
+      setTxs,
+      ether: data.get("ether"),
+      addr: data.get("addr")
+    });
+    };
 
     return (
-        <div className="container">
-          <div className="row mt-5">
-    
-            <div className="col">
-             <h1>This is the Admin Panel</h1>
-            </div>
-    
-            <div className="col">
-              <h3>Update Price</h3>
-              <button type="submit" className="btn btn-dark" 
-    onClick={updateNewPrice}>Update</button>
-            </div>
-          </div>
+      <form className="m-4" onSubmit={handleSubmit}>
+        <div className="credit-card w-full lg:w-1/2 sm:w-auto shadow-lg mx-auto rounded-xl bg-white">
+          <main className="mt-4 p-4">
+            <h1 className="text-xl font-semibold text-gray-700 text-center">
+              Send ETH payment
+            </h1>
+            <div className="">
+              <div className="my-3">
+                <input
+                  type="text"
+                  name="addr"
+                  className="input input-bordered block w-full focus:ring focus:outline-none"
+                  placeholder="Recipient Address"
+                />
+              </div>
+              <div className="my-3">
+                <input
+                  name="ether"
+                  type="text"
+                  className="input input-bordered block w-full focus:ring focus:outline-none"
+                  placeholder="Amount in ETH"
+                />
+              </div>
+            </div>=
+          </main>
+          <footer className="p-4">
+            <button
+              type="submit"
+              className="btn btn-primary submit-button focus:ring focus:outline-none w-full"
+            >
+              Pay now
+            </button>
+          </footer>
         </div>
-      );
-}
+      </form>
+    );
 
-export default Admin;
+}

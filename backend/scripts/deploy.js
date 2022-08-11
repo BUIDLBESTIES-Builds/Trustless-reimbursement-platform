@@ -2,12 +2,21 @@ const hre = require("hardhat");
 
 async function main() {
 
-  const PriceConsumer = await hre.ethers.getContractFactory("PriceConsumerV3");
-  const priceConsumer = await PriceConsumer.deploy();
+    // const PriceConsumer = await hre.ethers.getContractFactory("PriceConsumerV3");
+    // const priceConsumer = await PriceConsumer.deploy();
 
-  await priceConsumer.deployed();
+    // await priceConsumer.deployed();
 
-  console.log("Contract deployed to:", priceConsumer.address);
+    // console.log("Contract deployed to:", priceConsumer.address);
+
+
+  const RefundConsumer = await hre.ethers.getContractFactory("Refund");
+  const refundConsumer = await RefundConsumer.deploy();
+
+  await refundConsumer.deployed();
+
+  console.log("Contract deployed to:", refundConsumer.address);
+
 }
 
 // We recommend this pattern to be able to use async/await everywhere

@@ -43,8 +43,7 @@ function Admin() {
           <div className="row mt-5">
     
             <div className="col">
-              <h3>Stored Price</h3>
-              <p>Stored ETH/USD Price: {storedPrice}</p>
+             <h1>This is the Admin Panel</h1>
             </div>
     
             <div className="col">

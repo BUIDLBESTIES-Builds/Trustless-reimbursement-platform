@@ -17,6 +17,17 @@ input {
   font-weight: 500;
   margin-bottom: 2rem;
 }
+
+select {
+  display: block;
+  width: 21.3rem;
+  height: 3rem;
+  padding: 0.2rem;
+  font-size: 1.1em;
+  font-weight: 500;
+  margin-bottom: 2rem;
+}
+
 button {
   border: none;
   padding: 1rem;
@@ -33,6 +44,7 @@ button:hover {
   text-align: center;
   color: #36a936;
 }
+
 
 
 .carousel-open:checked + .carousel-item {
@@ -76,3 +88,4 @@ button:hover {
   .carousel-bullet {
   color: #ffb317; /*Set to match the Tailwind colour you want the active one to be */
 }
+

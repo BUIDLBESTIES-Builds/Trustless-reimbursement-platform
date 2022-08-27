@@ -8,7 +8,7 @@ function User() {
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState("");
 
-  let handleSubmit = async (e) => {
+  let handleData = async (e) => {
     e.preventDefault();
     try {
       let res = await fetch("https://trpapi.herokuapp.com/api/user/", {
@@ -41,7 +41,7 @@ function User() {
 
   return (
     <div className="App">
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleData}>
         <input
           type="text"
           value={fullname}

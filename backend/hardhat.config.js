@@ -9,12 +9,17 @@ require("@nomicfoundation/hardhat-toolbox");
 
  module.exports = {
      defaultNetwork: "rinkeby",
+     allowUnlimitedContractSize: true,
      networks: {
+        gas: 2100000,
+        gasPrice: 8000000000,
          hardhat: {
              // // If you want to do some forking, uncomment this
              // forking: {
              // url: MAINNET_RPC_URL
              // }
+             gas: 2100000,
+             gasPrice: 8000000000,
          },
          localhost: {
          },

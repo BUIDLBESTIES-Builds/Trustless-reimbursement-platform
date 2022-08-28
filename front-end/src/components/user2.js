@@ -68,6 +68,16 @@ export default function User2() {
         }
     
       }
+    
+    async function connect() {
+        const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+        let accounts = await provider.send("eth_requestAccounts", []);
+        let account = accounts[0];
+        provider.on('accountsChanged', function (accounts) {
+            account = accounts[0];
+            console.log("accunt"); // Print new address
+        })
+      }
 
     const getData = () => {
         fetch("https://trpapi.herokuapp.com/api/user/")
@@ -315,7 +325,7 @@ export default function User2() {
         </p>
       </div>
       <div className="flex-1 text-grey-darker  bg-slate-50">
-      <button onClick={updateNewPrice} class=" text-sm bg-orange-100 hover:bg-blue-700 text-black  py-2 px-2 rounded-full w-28 ml-80 mt-4">
+      <button onClick={connect} class=" text-sm bg-orange-100 hover:bg-blue-700 text-black  py-2 px-2 rounded-full w-28 ml-80 mt-4">
                         ConnectWallet
                       </button>
         <h2 className="text-2xl px-12 pt-28 font-semibold">Statistics</h2>

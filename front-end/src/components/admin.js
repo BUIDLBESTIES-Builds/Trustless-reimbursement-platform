@@ -27,7 +27,33 @@ export default function Admin() {
   const [txs, setTxs] = useState([]);
   const addr = "0xf1d440bBA4525A4E43d251F1251d031Eca9DdCdc";
   const ether = "0.1";
+  const [reimburse, fetchReimbursement] = useState([])
+  const [storedPrice, setStoredPrice] = useState('');
+  const provider = new ethers.providers.Web3Provider(window.ethereum)
+  const signer = provider.getSigner("0xcD1cAca6d0773B428AD968c01A54148c757c3312")
+  // const signer = provider.getSigner("0xcD1cAca6d0773B428AD968c01A54148c757c3312")
+  const contractAddress = '0xAFA7782250D7bDB25b93dF64D60C98496cDaAeb9';
 
+  const ABI = 
+  '[{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[],"name":"getLatestPrice","outputs":[{"internalType":"int256","name":"","type":"int256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"storeLatestPrice","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"storedPrice","outputs":[{"internalType":"int256","name":"","type":"int256"}],"stateMutability":"view","type":"function"}]'
+    const contract = new ethers.Contract(
+      contractAddress,
+      ABI,
+      signer
+      );
+  
+  const getStoredPrice = async () => {
+      try {
+        const contractPrice = await contract.storedPrice();
+        setStoredPrice(parseInt(contractPrice) / 100000000);
+        
+      } catch (error) {
+        console.log(error)
+        console.log("getStoredPrice Error: ", error);
+      }
+    }
+    getStoredPrice()
+    .catch(console.error)
   const getData = () => {
     fetch("https://trpapi.herokuapp.com/api/user/")
       .then((res) => res.json())
@@ -52,6 +78,30 @@ export default function Admin() {
   const users = Users.filter((user) => {
     return user.is_admin === true;
   });
+
+  const getReimbursement = () => {
+      fetch('https://trpapi.herokuapp.com/api/reimbursement/')
+        .then((res) => res.json())
+        .then((res) => {
+          fetchReimbursement(res)
+        })
+    }
+  useEffect(() => {
+      getReimbursement()
+  }, [])
+
+ 
+  let gymn = 54;
+  let travel = 80;
+  let education = 100;
+  let tech = 30;
+
+
+  const newgymn = (gymn/ storedPrice).toFixed(2);
+  const newtravel = (travel / storedPrice).toFixed(2);
+  const neweducation = (education/ storedPrice).toFixed(2);
+  const newtech = (tech/ storedPrice).toFixed(2);
+
   return (
     <div className="flex items-stretch bg-grey-lighter min-h-screen">
       <div className="flex-1 text-grey-darker text-center bg-orange-100 flex-none w-64">
@@ -120,95 +170,25 @@ export default function Admin() {
             </button>
           </div>
           <div class="grid grid-rows-4 gap-2 pt-4 ">
-            <div class="flex flex-cols justify-between text-sm p-4 pb-4 border-2 border-solid border-orange-100	 rounded-md ">
-              <div class="flex flex-row">
-                <img src={process.env.PUBLIC_URL + '/images/education_icon.png'} class="w-12 h-12 mt-2 mr-4"/>
-                <div class="grid grid-rows-2">
-                  <p className="font-sans font-normal text-lg">Figma Course</p>
-                  <button onClick={handleSubmit} class=" text-sm bg-orange-100 hover:bg-blue-700 text-black  py-2 px-2 rounded-full w-20">
-                    Approve
-                  </button>
-                </div>
-              </div>
+            
 
-              <div className="font-sans font-semibold text-2xl p-4">
-                $180.00
-              </div>
-            </div>
-            <div class="flex flex-cols justify-between text-sm p-4 pb-4 border-2 border-solid border-orange-100	 rounded-md ">
-              <div class="flex flex-row">
-      
-                <img src={process.env.PUBLIC_URL + '/images/gym_icon.png'} class="w-12 h-12 mt-2 mr-4"/>
-                <div class="grid grid-rows-2">
-                  <p className="font-sans font-normal text-lg">Gym - August</p>
-                  <button onClick={handleSubmit} class=" text-sm bg-orange-100 hover:bg-blue-700 text-black  py-2 px-2 rounded-full w-20">
-                    Approve
-                  </button>
-                </div>
-              </div>
-
-              <div className="font-sans font-semibold text-2xl p-4">$54.00</div>
-            </div>
-            <div class="flex flex-cols justify-between text-sm p-4 pb-4 border-2 border-solid border-orange-100	 rounded-md ">
-              <div class="flex flex-row">
-              <img src={process.env.PUBLIC_URL + '/images/travel_icon.png'} class="w-12 h-12 mt-2 mr-4"/>
-                {/* <img src="images/travel_icon.png" class="w-12 h-12 mt-2 mr-4" /> */}
-                <div class="grid grid-rows-2">
-                  <p className="font-sans font-normal text-lg">
-                    Travel Expenses
-                  </p>
-                  <button onClick={handleSubmit} class="text-sm bg-orange-100 hover:bg-blue-700 text-black  py-2 px-2 rounded-full w-20">
-                  Approve
-                  </button>
-                </div>
-              </div>
-
-              <div className="font-sans font-semibold text-2xl p-4">
-                $800.00
-              </div>
-            </div>
-            <div class="flex flex-cols justify-between text-sm p-4 pb-4 border-2 border-solid border-orange-100	 rounded-md ">
-              <div class="flex flex-row">
-                {/* <img src="images/tech_icon.png" class="w-12 h-12 mt-2 mr-4" /> */}
-                <img src={process.env.PUBLIC_URL + '/images/tech_icon.png'} class="w-12 h-12 mt-2 mr-4"/>
-
-                <div class="grid grid-rows-2">
-                  <p className="font-sans font-normal text-lg">Macbook</p>
-                  <button onClick={handleSubmit} class="text-sm bg-orange-100 hover:bg-blue-700 text-black  py-2 px-2 rounded-full w-20">
-                    Approve
-                  </button>
-                </div>
-              </div>
-
-              <div className="font-sans font-semibold text-2xl p-4">
-                $1299.00
-              </div>
-            </div>
-          </div>
-          <div class="flex justify-center pt-4">
-            <div class="block p-6 rounded-lg shadow-lg bg-white max-w-md">
-              <h5 class="text-gray-900 text-xl leading-tight font-medium mb-2">
-                User:{" "}
-              </h5>
-              <p class="text-gray-700 text-base mb-4">
-                Wallet: 0xf1d440bBA4525A4E43d251F1251d031Eca9DdCdc
-              </p>
-              <p class="text-gray-700 text-base mb-4">Request: Pending</p>
-              <p className="text-gray-700 text-base mb-4">Amount: 0.1 Eth</p>
-              <p className="text-gray-700 text-base mb-4">
-                Category: Education
-              </p>
-              <p className="text-gray-700 text-base mb-4">
-                Description: short course on data structures and algorithms
-              </p>
-              <button
-                type="button"
-                onClick={handleSubmit}
-                className=" inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
-              >
-                Pay
-              </button>
-            </div>
+              {reimburse.map(object => (
+                  <div class="flex flex-cols justify-between text-sm p-4 pb-4 border-2 border-solid border-orange-100	 rounded-md ">
+                  <div class="flex flex-row">
+                    
+                    <div class="grid grid-rows-2">
+                      <p className="font-sans font-normal text-md">user:{object.user_fullname}</p>
+                      <p className="font-sans font-normal text-md">wallet:{object.wallets}</p>
+                      <p className="font-sans font-normal text-md">Amount:0.1eth</p>
+                      <p className="font-sans font-normal text-md">status:{object.status}</p>
+                      <button onClick={handleSubmit} class=" text-sm bg-orange-100 hover:bg-blue-700 text-black  py-2 px-2 rounded-full w-20">
+                        Approve
+                      </button>
+                    </div>
+                  </div>
+                  </div>
+              ))}
+          
           </div>
         </p>
       </div>
@@ -232,8 +212,9 @@ export default function Admin() {
                     </h5>
                   </div>
 
-                  <h1 class="text-white bg-red-400 text-left text-4xl font-bold p-4 mb-2 m-0 rounded-b-lg">
-                    $5k
+                  <h1 class="text-white bg-red-400 text-left text-xl font-bold p-4 mb-2 m-0 rounded-b-lg">
+                    usd:${tech},
+                    eth:{newtech}
                   </h1>
                 </div>
               </div>
@@ -258,8 +239,9 @@ export default function Admin() {
                     </h5>
                   </div>
 
-                  <h1 class="text-white bg-cyan-500 text-left text-4xl font-bold p-4 mb-2 m-0 rounded-b-lg">
-                    $3k
+                  <h1 class="text-white bg-cyan-500 text-left text-xl font-bold p-4 mb-2 m-0 rounded-b-lg">
+                    usd${travel},
+                    eth:{newtravel}
                   </h1>
                 </div>
               </div>
@@ -285,8 +267,9 @@ export default function Admin() {
                     <h5 class="text-gray-900 text-2xl font-medium mb-2">Gym</h5>
                   </div>
 
-                  <h1 class="text-white bg-amber-400 text-left text-4xl font-bold p-4 mb-2 m-0 rounded-b-lg">
-                    $2k
+                  <h1 class="text-white bg-amber-400 text-left text-xl font-bold p-4 mb-2 m-0 rounded-b-lg">
+                    usd${gymn},
+                    eth:{newgymn}
                   </h1>
                 </div>
               </div>
@@ -312,8 +295,9 @@ export default function Admin() {
                     </h5>
                   </div>
 
-                  <h1 class="text-white bg-indigo-800 text-left text-4xl font-bold p-4 mb-2 m-0 rounded-b-lg">
-                    $1k
+                  <h1 class="text-white bg-indigo-800 text-left text-xl font-bold p-4 mb-2 m-0 rounded-b-lg">
+                    usd${tech},
+                    eth{newtech}
                   </h1>
                 </div>
               </div>

@@ -6,6 +6,8 @@ import User from "./components/user";
 import GetPrices from "./components/price";
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import User2 from "./components/user2";
+import Admin2 from "./components/admin2";
+import Home from "./components/home";
 
 function App() {
   return (
@@ -21,6 +23,7 @@ function App() {
           <Route path="/admin" element={<Admin/>}/>
           <Route path="/user" element={<User2/>}/>
           <Route path="/price" element={<GetPrices/>}/>
+          <Route path="" element={<Home/>}/>
         </Routes>
       </BrowserRouter>
     </div>

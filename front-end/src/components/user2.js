@@ -281,6 +281,12 @@ export default function User2() {
                 placeholder="Description"
                 onChange={(e) => setDescription(e.target.value)}
                 />
+                <input
+                type="text"
+                value={fullname}
+                placeholder="wallet address"
+                onChange={(e) => setFullname(e.target.value)}
+                />
                 <select name="dropdown">
                 <option defaultValue="Status">Status</option>
                 <option value="PENDING">PENDING</option>

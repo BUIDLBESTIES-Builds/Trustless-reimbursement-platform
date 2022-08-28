@@ -51,9 +51,21 @@ export default function Admin() {
         console.log(error)
         console.log("getStoredPrice Error: ", error);
       }
+  }
+  getStoredPrice()
+  .catch(console.error)
+
+  async function updateNewPrice() {
+    try {
+      const transaction = await contract.storeLatestPrice();
+      await transaction.wait();
+      await getStoredPrice();
+    } catch (error) {
+      console.log("updateNewPrice Error: ", error);
     }
-    getStoredPrice()
-    .catch(console.error)
+
+  }
+
   const getData = () => {
     fetch("https://trpapi.herokuapp.com/api/user/")
       .then((res) => res.json())
@@ -193,6 +205,9 @@ export default function Admin() {
         </p>
       </div>
       <div className="flex-1 text-grey-darker  bg-slate-50">
+      <button onClick={updateNewPrice} class=" text-sm bg-orange-100 hover:bg-blue-700 text-black  py-2 px-2 rounded-full w-28 ml-80 mt-4">
+                        ConnectWallet
+                      </button>
         <h2 className="text-2xl px-12 pt-28 font-semibold">Statistics</h2>
         <div class="grid grid-cols-3 gap-4 pt-10 pl-10">
           <div class="...">
@@ -304,24 +319,7 @@ export default function Admin() {
             </div>
           </div>
 
-          {/* <div class="pl-14">
-            <div class="flex justify-center">
-              <div class="rounded-lg shadow-lg bg-violet-300 max-w-sm w-80 h-60">
-                <a
-                  href="#!"
-                  data-mdb-ripple="true"
-                  data-mdb-ripple-color="light"
-                ></a>
-                <div class="p-6">
-                  <h5 class="text-gray-900 text-xl font-medium mb-2">
-                    Education
-                  </h5>
-                  <p class="text-gray-700 text-base mb-4">Total spent: $0</p>
-                  <p class="text-gray-700 text-base mb-4">Total Users: 0</p>
-                </div>
-              </div>
-            </div>
-          </div> */}
+      
         </div>
       </div>
     </div>

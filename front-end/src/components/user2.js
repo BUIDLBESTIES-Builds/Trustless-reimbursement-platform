@@ -58,6 +58,17 @@ export default function User2() {
         }
       }
 
+    async function updateNewPrice() {
+        try {
+          const transaction = await contract.storeLatestPrice();
+          await transaction.wait();
+          await getStoredPrice();
+        } catch (error) {
+          console.log("updateNewPrice Error: ", error);
+        }
+    
+      }
+
     const getData = () => {
         fetch("https://trpapi.herokuapp.com/api/user/")
         .then((res) => res.json())
@@ -151,7 +162,7 @@ export default function User2() {
             </br>
            
           </div>
-          <button onClick={handleClick} class="bg-cyan-200  hover:bg-blue-700 text-black  py-2 px-4 rounded-full w-24">
+          <button onClick={handleClick} class="bg-orange-200  hover:bg-blue-700 text-black  py-2 px-4 rounded-full w-24">
               Request
             </button>
         </div>
@@ -304,6 +315,9 @@ export default function User2() {
         </p>
       </div>
       <div className="flex-1 text-grey-darker  bg-slate-50">
+      <button onClick={updateNewPrice} class=" text-sm bg-orange-100 hover:bg-blue-700 text-black  py-2 px-2 rounded-full w-28 ml-80 mt-4">
+                        ConnectWallet
+                      </button>
         <h2 className="text-2xl px-12 pt-28 font-semibold">Statistics</h2>
         <div class="grid grid-cols-3 gap-4 pt-10 pl-10">
           <div class="...">
